@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "sourceMap": true,
+        "target": "ES6",
+        //"module": "es2020",
+        "outDir": "out",
+    }
+}
