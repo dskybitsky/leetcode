@@ -1,4 +1,4 @@
-class ListNode {
+export class ListNode {
     val: number;
     next: ListNode | null;
 
@@ -8,7 +8,7 @@ class ListNode {
     }
  }
  
- class TreeNode {
+ export class TreeNode {
     val: number;
     left: TreeNode | null;
     right: TreeNode | null;
@@ -19,7 +19,37 @@ class ListNode {
         this.right = (right===undefined ? null : right);
     }
 }
+
+let current: ListNode | null;
  
-function sortedListToBST(head: ListNode | null): TreeNode | null {
-    return null;
+export function sortedListToBST(head: ListNode | null): TreeNode | null {
+    let n = 0;
+    let p = head;
+
+    while (p) {
+        p = p.next;
+        n++;
+    }
+
+    current = head;
+
+    return buildTree(n);
 };
+
+function buildTree(n: number): TreeNode | null {
+    if (n <= 0) {
+        return null;
+    }
+
+    const left = buildTree(Math.floor(n / 2));
+
+    const root = new TreeNode(current.val);
+
+    root.left = left;
+
+    current = current.next;
+
+    root.right = buildTree(n - Math.floor(n / 2) - 1);
+
+    return root;
+}
