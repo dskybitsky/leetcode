@@ -1,57 +1,48 @@
 export function isMatch(s: string, p: string): boolean {
-    var i = 0;
-    var pi = 0;
+    return matchPattern(s, parsePattern(p));
+};
 
-    while (i < s.length) {
-        if (pi === p.length) {
-            return false;
+function matchPattern(
+    s: string,
+    p: [string, string][],
+    sb = 0,
+    se = s.length - 1,
+    pb = 0,
+    pe = p.length - 1
+): boolean {
+    while (
+        sb < s.length
+        && se >= 0
+        && pb < p.length
+        && pb >= 0
+    ) {
+        while (p[pb][1] == '' && isMatchChar(s[sb], p[pb][0])) {
+            sb++;
+            pb++;
+            continue;
         }
-
-        if (isMatchChar(s[i], p[pi])) {
-            i++;
-            pi++;
+    
+        if (p[pe][1] == '' && isMatchChar(s[se], p[pe][0])) {
+            se--;
+            pe--;
             continue;
         }
 
-        const notLastP = pi < p.length - 2;
-
-        if (notLastP && p[pi + 1] == '*') {
-            pi += 2;
-            continue;
-        }
-
-        if (p[pi] == '*') {
-            if (isMatchChar(s[i], p[pi - 1])) {
-                i++;
-                continue;
+        if (p[pb][1] == '*' || p[pe][1] == '*') {    
+            if (p[pb][1] == '*') {
+                while (sb <= se && isMatchChar(s[sb], p[pb][0])) {
+                    sb++;
+                }
+                pb++;
             }
 
-            if (!notLastP && isMatchChar(s[i], p[pi + 1])) {
-                pi++;
-                continue;
+            if (p[pe][1] == '*') {
+                while (se >= sb && isMatchChar(s[se], p[pe][0])) {
+                    se--;
+                }
+                pe--;
             }
-        }
 
-        return false;
-    }
-
-    var pe = pi;
-
-    pi = p.length - 1;
-    i = s.length - 1;
-
-    while (pi >= pe) {
-        if (i == 0) {
-            return false;
-        }
-        if (p[pi] == '*') {
-            pi -= 2;
-            continue;
-        }
-
-        if (isMatchChar(s[i], p[pi])) {
-            pi--;
-            i--;
             continue;
         }
 
@@ -59,7 +50,22 @@ export function isMatch(s: string, p: string): boolean {
     }
 
     return true;
-};
+}
+
+function parsePattern(p: string): [string, string][] {
+    const res: [string, string][] = [];
+
+    for (var i = 0; i < p.length; i++) {
+        if (i < p.length - 1 && p[i + 1] == '*') {
+            res.push([p[i], '*']);
+            i++;
+        } else {
+            res.push([p[i], '']);
+        }
+    }
+
+    return res;
+}
 
 function isMatchChar(s: string, p: string): boolean {
     return s == p || p == '.';
