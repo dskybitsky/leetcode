@@ -6,7 +6,7 @@ export class ListNode {
         this.val = (val===undefined ? 0 : val);
         this.next = (next===undefined ? null : next);
     }
- }
+}
 
 export function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
     if (lists.length === 0) {
