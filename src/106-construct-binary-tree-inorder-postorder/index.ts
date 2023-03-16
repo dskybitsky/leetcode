@@ -22,18 +22,8 @@ export function buildTree(inorder: number[], postorder: number[]): TreeNode | nu
     const leftInorder = inorder.slice(0, inorderSplitIndex);
     const rightInorder = inorder.slice(inorderSplitIndex + 1);
 
-    const leftPostorder = [];
-    const rightPostorder = [];
-
-    for (let i = postorder.length - 2; i >= 0; i--) {
-        const index = leftInorder.indexOf(postorder[i]);
-
-        if (index < 0) {
-            rightPostorder.unshift(postorder[i]);
-        } else {
-            leftPostorder.unshift(postorder[i]);
-        }
-    }
+    const leftPostorder = postorder.slice(0, leftInorder.length);
+    const rightPostorder = postorder.slice(leftInorder.length, postorder.length - 1);
 
     const root = new TreeNode(rootVal);
     
