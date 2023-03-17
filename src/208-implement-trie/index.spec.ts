@@ -14,4 +14,10 @@ describe('Trie', () => {
 
         expect(trie.search("app")).toBe(true);
     });
+
+    test('case 2', () => {
+        const trie = new Trie();
+
+        expect(trie.search("a")).toBe(false);
+    })
 })

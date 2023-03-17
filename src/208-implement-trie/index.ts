@@ -19,11 +19,14 @@ export class Trie {
         let current = this.root;
 
         for (let i = 0; i < word.length; i++) {
-            if (!current.children.has(word[i])) {
-                current.children.set(word[i], new TrieNode());
+            const char = word[i];
+
+            let next = current.children.get(char);
+
+            if (!next) {
+                next = new TrieNode();
+                current.children.set(char, next);
             }
-            
-            const next = current.children.get(word[i]);
 
             if (i === word.length - 1) {
                 next.isEnd = true;
@@ -36,7 +39,7 @@ export class Trie {
     search(word: string): boolean {
         const last = this.traverse(word);
 
-        return last && last.isEnd;
+        return last?.isEnd ?? false;
     }
 
     startsWith(prefix: string): boolean {
