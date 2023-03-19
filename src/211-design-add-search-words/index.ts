@@ -1,20 +1,12 @@
 export class WordDictionary {
-    private prefixRoot: TrieNode = new TrieNode();
+    private root: TrieNode = new TrieNode();
 
     constructor() {
 
     }
 
     addWord(word: string): void {
-        this.insert(this.prefixRoot, word);
-    }
-
-    search(word: string): boolean {
-        return this.traverse(this.prefixRoot, word)?.isEnd ?? false;
-    }
-
-    private insert(root: TrieNode, word: string): void {
-        let current = root;
+        let current = this.root;
 
         for (let i = 0; i < word.length; i++) {
             current.lengths.set(word.length - i, true);
@@ -36,20 +28,30 @@ export class WordDictionary {
         }
     }
 
-    private traverse(root: TrieNode, s: string): TrieNode | null {
+    search(word: string, root: TrieNode = this.root): boolean {
         let current = root;
 
-        for (let i = 0; i < s.length; i++) {
-            const next = current.children.get(s[i]);
+        for (let i = 0; i < word.length; i++) {
+            if (word[i] === '.') {
+                for (const [key, value] of current.children) {
+                    if (this.search(word.substring(i + 1), value)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            const next = current.children.get(word[i]);
 
             if (!next) {
-                return null;
+                return false;
             }
 
             current = next;
         }
 
-        return current;
+        return current.isEnd;
     }
 }
 

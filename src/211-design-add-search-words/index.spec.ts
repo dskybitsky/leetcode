@@ -10,7 +10,7 @@ describe('WordDictionary', () => {
         
         expect(wordDictionary.search("pad")).toBe(false);
         expect(wordDictionary.search("bad")).toBe(true);
-        //expect(wordDictionary.search(".ad")).toBe(true);
-        //expect(wordDictionary.search("b..")).toBe(true);
+        expect(wordDictionary.search(".ad")).toBe(true);
+        expect(wordDictionary.search("b..")).toBe(true);
     });
 });
