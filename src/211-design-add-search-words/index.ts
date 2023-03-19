@@ -32,8 +32,12 @@ export class WordDictionary {
         let current = root;
 
         for (let i = 0; i < word.length; i++) {
+            if (!current.lengths.has(word.length - i)) {
+                return false;
+            }
+
             if (word[i] === '.') {
-                for (const [key, value] of current.children) {
+                for (const [, value] of current.children) {
                     if (this.search(word.substring(i + 1), value)) {
                         return true;
                     }
