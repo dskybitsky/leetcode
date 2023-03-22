@@ -7,45 +7,26 @@ export function minScore(n: number, roads: number[][]): number {
 
     const adjMap = buildAdjMap(roads);
 
-    const spt = new Map<number, boolean>();
+    const verts = [1];
+    const visitedVerts = new Map<number, boolean>();
 
-    const dist = new Map<number, number>();
+    let minW = 10000;
 
-    dist.set(1, 0);
+    while (verts.length > 0) {
+        const v = verts.shift();
 
-    spt.set(1, true);
+        for (const [v2, w] of adjMap.get(v)) {
+            minW = Math.min(minW, w);
 
-    for (const [v2, w] of adjMap.get(1)) {
-        dist.set(v2, w);
-    }
-
-    while (unprocessed.size > 0) {
-        let minV: number | undefined = undefined;
-
-        for (const [v, d] of dist) {
-            if (
-                !spt.has(v)
-                && (minV === undefined || d < dist.get(minV))
-            ) {
-                minV = v;
+            if (!visitedVerts.has(v2)) {
+                verts.push(v2);
+                visitedVerts.set(v2, true);
             }
         }
-
-        if (minV === undefined) {
-            break;
-        }
-
-        spt.set(minV, true);
-
-        for (const [v2, w] of adjMap.get(minV)) {
-            dist.set(v2, Math.min(dist.get(minV), w));     
-        }
     }
 
-    return Math.min(...Array.from(dist.values()));
+    return minW;
 };
-
-
 
 function buildAdjMap(roads: number[][]): Map<number, Map<number, number>> {
     const map = new Map<number, Map<number, number>>();
