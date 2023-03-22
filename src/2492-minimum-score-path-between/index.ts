@@ -19,8 +19,6 @@ export function minScore(n: number, roads: number[][]): number {
         dist.set(v2, w);
     }
 
-    unprocessed.delete(1);
-    
     while (unprocessed.size > 0) {
         let minV: number | undefined = undefined;
 
@@ -40,20 +38,11 @@ export function minScore(n: number, roads: number[][]): number {
         spt.set(minV, true);
 
         for (const [v2, w] of adjMap.get(minV)) {
-            const newW = dist.get(minV) + w;
-
-            if (
-                !dist.has(v2)
-                || ( newW < dist.get(v2))
-            ) {
-                dist.set(v2, newW);
-            }            
+            dist.set(v2, Math.min(dist.get(minV), w));     
         }
-
-        unprocessed.delete(minV);
     }
 
-    return dist.get(n) ?? -1;
+    return Math.min(...Array.from(dist.values()));
 };
 
 

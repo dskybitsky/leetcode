@@ -7,7 +7,7 @@ describe('minScore', () => {
     });
 
 
-    test('case 1', () => {
+    test('case 2', () => {
         expect(minScore(4, [[1, 2, 2], [1, 3, 4], [3, 4, 7]]))
             .toBe(2);
     });
