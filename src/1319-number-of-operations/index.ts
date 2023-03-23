@@ -16,17 +16,17 @@ export function makeConnected(n: number, connections: number[][]): number {
     while (vertices.size > 0) {
         const v = vertices.keys().next().value;
 
-        const verts = [v];
-        const visitedVerts = new Map<number, boolean>();
+        const vertsToVisit = [v];
+        const vertsVisited = new Map<number, boolean>();
 
-        while (verts.length > 0) {
-            const v1 = verts.shift();
+        while (vertsToVisit.length > 0) {
+            const v1 = vertsToVisit.shift();
 
             if (adjMap.has(v1)) {
                 for (const [v2] of adjMap.get(v1)) {
-                    if (!visitedVerts.has(v2)) {
-                        verts.push(v2);
-                        visitedVerts.set(v2, true);
+                    if (!vertsVisited.has(v2)) {
+                        vertsToVisit.push(v2);
+                        vertsVisited.set(v2, true);
                     }
                 }
             }        
@@ -36,7 +36,7 @@ export function makeConnected(n: number, connections: number[][]): number {
         
         vertices.delete(v);
 
-        for (const [vv] of visitedVerts) {
+        for (const [vv] of vertsVisited) {
             vertices.delete(vv);
         }
     }

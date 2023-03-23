@@ -15,4 +15,9 @@ describe('makeConnected', () => {
         expect(makeConnected(6, [[0, 1], [0, 2], [0, 3], [1, 2]]))
             .toBe(-1);
     });
+
+    test('case 4', () => {
+        expect(makeConnected(5, [[0, 1], [0, 2], [3, 4], [2, 3]]))
+            .toBe(0);
+    });
 });
