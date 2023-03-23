@@ -9,7 +9,7 @@ export function makeConnected(n: number, connections: number[][]): number {
         vertices.set(i, true);
     }
 
-    const adjMap = buildAdjMap(connections)
+    const adjMap = buildAdjMap(connections);
 
     let result = 0;
 
@@ -21,24 +21,21 @@ export function makeConnected(n: number, connections: number[][]): number {
 
         while (vertsToVisit.length > 0) {
             const v1 = vertsToVisit.shift();
+        
+            vertices.delete(v1);
 
             if (adjMap.has(v1)) {
                 for (const [v2] of adjMap.get(v1)) {
                     if (!vertsVisited.has(v2)) {
                         vertsToVisit.push(v2);
                         vertsVisited.set(v2, true);
+                        adjMap.get(v2).delete(v1);
                     }
                 }
             }        
         }
 
         result++;
-        
-        vertices.delete(v);
-
-        for (const [vv] of vertsVisited) {
-            vertices.delete(vv);
-        }
     }
 
     return result - 1;
