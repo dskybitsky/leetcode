@@ -29,7 +29,11 @@ export function makeConnected(n: number, connections: number[][]): number {
                     if (!vertsVisited.has(v2)) {
                         vertsToVisit.push(v2);
                         vertsVisited.set(v2, true);
+                        
+                        adjMap.get(v1).delete(v2);
                         adjMap.get(v2).delete(v1);
+
+                        vertices.delete(v2);
                     }
                 }
             }        
