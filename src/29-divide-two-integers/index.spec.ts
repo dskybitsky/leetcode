@@ -13,7 +13,11 @@ describe('divide', () => {
         expect(divide(-2147483648, -1)).toBe(2147483647);
     });
 
-    test('case 3', () => {
+    test('case 4', () => {
         expect(divide(4, 2)).toBe(2);
+    });
+
+    test('case 5', () => {
+        expect(divide(2147483647, 2)).toBe(1073741823);
     });
 });

@@ -25,8 +25,17 @@ function divideAbs(dividend: number, divisor: number): number {
     let result = 0;
 
     while (dividend >= divisor) {
-        dividend -= divisor;
-        result++;
+        let currentDivisor = divisor;
+        let currentMult = 1;
+    
+        while (dividend >= currentDivisor) {
+            dividend -= currentDivisor;
+
+            result += currentMult;
+            
+            currentDivisor += currentDivisor;
+            currentMult += currentMult;
+        }
     }
 
     return result;
