@@ -1,8 +1,8 @@
 export function countPairs(n: number, edges: number[][]): number {
-    const vertices = new Map<number, boolean>();
+    const vertices = new Set<number>();
 
     for (let i = 0; i < n; i++) {
-        vertices.set(i, true);
+        vertices.add(i);
     }
 
     const adjMap = buildAdjMap(edges);
@@ -10,7 +10,7 @@ export function countPairs(n: number, edges: number[][]): number {
     let result = n * (n - 1) / 2;
 
     while (vertices.size > 0) {
-        const v = vertices.keys().next().value;
+        const [v] = vertices;
 
         const vertsToVisit = [v];
         const vertsVisited = new Set<number>();
