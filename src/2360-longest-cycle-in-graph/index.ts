@@ -13,30 +13,30 @@ export function longestCycle(edges: number[]): number {
         const [v] = vertices;
 
         const vertsToVisit = [v];
-        const vertsVisited = new Set<number>();
+        const vertsVisited = new Map<number, number>();
 
-        vertsVisited.add(v);
+        vertsVisited.set(v, 0);
 
-        let cycleLen = 1;
+        let distance = 1;
 
         while (vertsToVisit.length > 0) {
             const v1 = vertsToVisit.shift();
+
+            vertices.delete(v1);
         
             if (adjMap.has(v1)) {
                 for (const v2 of adjMap.get(v1)) {
                     if (!vertsVisited.has(v2)) {
                         vertsToVisit.push(v2);
-                        vertsVisited.add(v2);
-                        cycleLen++;
-                    } else if (v2 === v) {
-                        result = Math.max(result, cycleLen);
-                        cycleLen = 1;
+                        vertsVisited.set(v2, distance);
+                        distance++;
+                        vertices.delete(v2);
+                    } else {
+                        result = Math.max(result, distance - vertsVisited.get(v2));
                     }
                 }
             }
         }
-
-        vertices.delete(v);
     }
 
     return result;
