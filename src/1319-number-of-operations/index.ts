@@ -3,65 +3,55 @@ export function makeConnected(n: number, connections: number[][]): number {
         return -1;
     }
 
-    const vertices = new Map<number, boolean>();
-
-    for (let i = 0; i < n; i++) {
-        vertices.set(i, true);
-    }
-
     const adjMap = buildAdjMap(connections);
 
-    let result = 0;
+    const visit: boolean[] = [];
 
-    while (vertices.size > 0) {
-        const v = vertices.keys().next().value;
+    for (let i = 0; i < n; i++) {
+        visit[i] = false;
+    }
 
-        const vertsToVisit = [v];
-        const vertsVisited = new Map<number, boolean>();
+    const result = 0;
 
-        while (vertsToVisit.length > 0) {
-            const v1 = vertsToVisit.shift();
-        
-            vertices.delete(v1);
-
-            if (adjMap.has(v1)) {
-                for (const [v2] of adjMap.get(v1)) {
-                    if (!vertsVisited.has(v2)) {
-                        vertsToVisit.push(v2);
-                        vertsVisited.set(v2, true);
-                        
-                        adjMap.get(v1).delete(v2);
-                        adjMap.get(v2).delete(v1);
-
-                        vertices.delete(v2);
-                    }
-                }
-            }        
+    for (let i = 0; i < n; i++) {
+        if (!visit[i]) {
+            result++;
+            dfs(i, adjMap, visit);
         }
-
-        result++;
     }
 
     return result - 1;
 }
 
-function buildAdjMap(edges: number[][]): Map<number, Map<number, boolean>> {
-    const map = new Map<number, Map<number, boolean>>();
+function dfs(node: number, adjMap: Map<number, Set<number>>, visit: boolean[]): void {
+    visit[node] = true;
+
+    if (adjMap.has(node)) {
+        for (const neighbor of adjMap.get(node)) {
+            if (!visit[neighbor]) {
+                dfs(neighbor, adjMap, visit);
+            }
+        }
+    }
+}
+
+function buildAdjMap(edges: number[][]): Map<number, Set<number>> {
+    const map = new Map<number, Set<number>>();
 
     for (let i = 0; i < edges.length; i++) {
         const [v1, v2] = edges[i];
 
         if (!map.has(v1)) {
-            map.set(v1, new Map<number, boolean>());
+            map.set(v1, new Set<number>());
         }
 
-        map.get(v1).set(v2, true);
+        map.get(v1).add(v2);
 
         if (!map.has(v2)) {
-            map.set(v2, new Map<number, boolean>());
+            map.set(v2, new Set<number>());
         }
 
-        map.get(v2).set(v1, true);
+        map.get(v2).add(v1);
     }
 
     return map;
