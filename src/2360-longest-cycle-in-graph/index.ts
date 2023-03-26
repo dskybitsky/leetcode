@@ -1,62 +1,39 @@
 export function longestCycle(edges: number[]): number {
-    const vertices = new Set<number>();
+    let answer = -1;
 
-    for (let i = 0; i < edges.length; i++) {
-        vertices.add(i);
+    const n = edges.length;
+
+    const visit: number[] = [];
+
+    for (let i = 0; i < n; i++) {
+        visit[i] = 0;
     }
 
-    let result = -1;
+    for (let i = 0; i < n; i++) {
+        if (!visit[i]) {
+            const dist = new Map<number, number>();
+            dist.set(i, 1);
+            answer = Math.max(answer, dfs(i, edges, dist, visit));
+        }   
+    }
 
-    const adjMap = buildAdjMap(edges);
+    return answer;
+};
 
-    while (vertices.size > 0) {
-        const [v] = vertices;
+function dfs(node: number, edges: number[], dist: Map<number, number>, visit: number[]): number {
+    visit[node] = 1;
 
-        const vertsToVisit = [v];
-        const vertsVisited = new Map<number, number>();
+    const neighbor = edges[node];
 
-        vertsVisited.set(v, 0);
+    if (neighbor >= 0) {
+        if (!visit[neighbor]) {
+            dist.set(neighbor, dist.get(node) + 1);
 
-        let distance = 1;
-
-        while (vertsToVisit.length > 0) {
-            const v1 = vertsToVisit.shift();
-
-            vertices.delete(v1);
-        
-            if (adjMap.has(v1)) {
-                for (const v2 of adjMap.get(v1)) {
-                    if (!vertsVisited.has(v2)) {
-                        vertsToVisit.push(v2);
-                        vertsVisited.set(v2, distance);
-                        distance++;
-                        vertices.delete(v2);
-                    } else {
-                        result = Math.max(result, distance - vertsVisited.get(v2));
-                    }
-                }
-            }
+            return dfs(neighbor, edges, dist, visit);    
+        } else if (dist.has(neighbor)) {
+            return dist.get(node) - dist.get(neighbor) + 1;
         }
     }
 
-    return result;
-};
-
-function buildAdjMap(edges: number[]): Map<number, Set<number>> {
-    const map = new Map<number, Set<number>>();
-
-    for (let i = 0; i < edges.length; i++) {
-        if (edges[i] >= 0) {
-            const v1 = i;
-            const v2 = edges[i];
-
-            if (!map.has(v1)) {
-                map.set(v1, new Set<number>());
-            }
-    
-            map.get(v1).add(v2);
-        }
-    }
-
-    return map;
-};
+    return -1;
+}
