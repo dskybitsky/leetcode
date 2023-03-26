@@ -11,7 +11,7 @@ export function makeConnected(n: number, connections: number[][]): number {
         visit[i] = false;
     }
 
-    const result = 0;
+    let result = 0;
 
     for (let i = 0; i < n; i++) {
         if (!visit[i]) {
