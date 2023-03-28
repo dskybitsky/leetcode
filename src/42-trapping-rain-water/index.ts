@@ -1,61 +1,27 @@
 export function trap(height: number[]): number {
-    let peak = getNextPeak(height);
+    let ans = 0;
 
-    if (peak < 0) {
+    if (!height.length) {
         return 0;
     }
 
-    let nextPeak = getNextHeighestPeak(height, peak);
+    const leftMax = [height[0]];
 
-    let result = 0;
-
-    while (nextPeak > 0) {
-        const maxHeight = Math.min(height[peak], height[nextPeak]);
-
-        for (let i = peak + 1; i < nextPeak; i++) {
-            if (height[i] < maxHeight) {
-                result += maxHeight - height[i];
-            }
-        }
-
-        peak = nextPeak;
-
-        nextPeak = getNextHeighestPeak(height, peak);
+    for (let i = 1; i < height.length; i++) {
+        leftMax[i] = Math.max(height[i], leftMax[i - 1]);
     }
 
-    return result;
+    const rightMax = new Array(height.length);
+
+    rightMax[height.length - 1] = height[height.length - 1];
+
+    for (let i = height.length - 2; i >= 0; i--) {
+        rightMax[i] = Math.max(height[i], rightMax[i + 1]);
+    }
+
+    for (let i = 0; i < height.length; i++) {
+        ans += Math.min(leftMax[i], rightMax[i]) - height[i];
+    }
+
+    return ans;
 };
-
-function getNextHeighestPeak(height: number[], peak: number): number {
-    let nextPeak = peak;
-    let maxNextPeak = -1;
-
-    while (true) {
-        nextPeak = getNextPeak(height, nextPeak + 1);
-
-        if (nextPeak < 0) {
-            return maxNextPeak;
-        }
-    
-        if (height[nextPeak] >= height[peak]) {
-            return nextPeak;
-        }
-
-        if (maxNextPeak === - 1 || height[nextPeak] > height[maxNextPeak]) {
-            maxNextPeak = nextPeak;
-        }
-    }
-}
-
-function getNextPeak(height: number[], from = 0): number {
-    for (let i = from; i < height.length; i++) {
-        if (
-            (i === 0 || height[i - 1] <= height[i])
-            && (i === height.length - 1 || height[i] > height[i + 1])
-        ) {
-            return i;
-        }
-    }
-
-    return -1;
-}
