@@ -5,7 +5,7 @@ export function trap(height: number[]): number {
         return 0;
     }
 
-    let nextPeak = getNextPeak(height, peak + 1);
+    let nextPeak = getNextHeighestPeak(height, peak);
 
     let result = 0;
 
@@ -20,12 +20,31 @@ export function trap(height: number[]): number {
 
         peak = nextPeak;
 
-        nextPeak = getNextPeak(height, peak + 1);
+        nextPeak = getNextHeighestPeak(height, peak);
     }
 
     return result;
 };
 
+
+function getNextHeighestPeak(height: number[], peak: number): number {
+    let nextPeak = getNextPeak(height, peak + 1);
+    let lastPeak = nextPeak;
+    
+    while (nextPeak > 0 && height[nextPeak] < height[peak]) {
+        if (nextPeak > 0) {
+            lastPeak = nextPeak;
+        }
+
+        nextPeak = getNextPeak(height, lastPeak + 1);
+    }
+
+    if (nextPeak > 0) {
+        lastPeak = nextPeak;
+    }
+
+    return lastPeak;
+}
 
 function getNextPeak(height: number[], from = 0): number {
     for (let i = from; i < height.length; i++) {

@@ -10,4 +10,9 @@ describe('trap', () => {
         expect(trap([4, 2, 0, 3, 2, 5]))
             .toBe(9);
     });
+
+    test('case 3', () => {
+        expect(trap([9, 6, 8, 8, 5, 6, 3]))
+            .toBe(3);
+    })
 });
