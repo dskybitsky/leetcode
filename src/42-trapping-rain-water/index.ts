@@ -26,24 +26,25 @@ export function trap(height: number[]): number {
     return result;
 };
 
-
 function getNextHeighestPeak(height: number[], peak: number): number {
-    let nextPeak = getNextPeak(height, peak + 1);
-    let lastPeak = nextPeak;
+    let nextPeak = peak;
+    let maxNextPeak = -1;
+
+    while (true) {
+        nextPeak = getNextPeak(height, nextPeak + 1);
+
+        if (nextPeak < 0) {
+            return maxNextPeak;
+        }
     
-    while (nextPeak > 0 && height[nextPeak] < height[peak]) {
-        if (nextPeak > 0) {
-            lastPeak = nextPeak;
+        if (height[nextPeak] >= height[peak]) {
+            return nextPeak;
         }
 
-        nextPeak = getNextPeak(height, lastPeak + 1);
+        if (maxNextPeak === - 1 || height[nextPeak] > height[maxNextPeak]) {
+            maxNextPeak = nextPeak;
+        }
     }
-
-    if (nextPeak > 0) {
-        lastPeak = nextPeak;
-    }
-
-    return lastPeak;
 }
 
 function getNextPeak(height: number[], from = 0): number {
