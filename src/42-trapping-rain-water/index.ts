@@ -1,35 +1,41 @@
 export function trap(height: number[]): number {
+    let peak = getNextPeak(height);
+
+    if (peak < 0) {
+        return 0;
+    }
+
+    let nextPeak = getNextPeak(height, peak + 1);
+
     let result = 0;
 
-    let p1 = 0;
-    let p2 = 0;
+    while (nextPeak > 0) {
+        const maxHeight = Math.min(height[peak], height[nextPeak]);
 
-    while (p1 < height.length) {
-        while (p1 < height.length - 1 && height[p1 + 1] >= height[p1]) {
-            p1++;
+        for (let i = peak + 1; i < nextPeak; i++) {
+            if (height[i] < maxHeight) {
+                result += maxHeight - height[i];
+            }
         }
 
-        if (p1 === height.length - 1) {
-            return result;
-        }
+        peak = nextPeak;
 
-        let interResult = 0;
-
-        p2 = p1 + 1;
-
-        while (p2 < height.length && height[p2] < height[p1]) {
-            interResult += height[p1] - height[p2];
-            p2++;
-        }
-
-        if (p2 === height.length) {
-            return result;
-        }
-
-        result += interResult;
-
-        p1 = p2;
+        nextPeak = getNextPeak(height, peak + 1);
     }
 
     return result;
 };
+
+
+function getNextPeak(height: number[], from = 0): number {
+    for (let i = from; i < height.length; i++) {
+        if (
+            (i === 0 || height[i - 1] <= height[i])
+            && (i === height.length - 1 || height[i] > height[i + 1])
+        ) {
+            return i;
+        }
+    }
+
+    return -1;
+}
