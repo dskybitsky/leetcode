@@ -1,4 +1,12 @@
+let memo: number[][] = [];
+
 export function maxSatisfaction(satisfaction: number[], from = 0): number {
+    memo = [];
+
+    for (let i = 0; i < satisfaction.length; i++) {
+        memo[i] = [];
+    }
+
     if (from > satisfaction.length - 1) {
         return 0;
     }
@@ -13,8 +21,16 @@ function dp(sat: number[], from = 0, q = 1): number {
         return 0;
     }
 
-    return Math.max(
+    if (memo[from][q] !== undefined) {
+        return memo[from][q];
+    }
+
+    const result = Math.max(
         sat[from] * q + dp(sat, from + 1, q + 1),
         dp(sat, from + 1, q)
     );
+
+    memo[from][q] = result;
+
+    return result;
 }
