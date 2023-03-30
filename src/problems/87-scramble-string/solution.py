@@ -8,31 +8,34 @@ sys.path.append(root)
 ###############################################################################
 
 from functools import lru_cache
+from collections import Counter
 
 class Solution:
     
-    @lru_cache(maxsize=None)
     def isScramble(self, s1: str, s2: str) -> bool:
-        length = len(s1)
+        @lru_cache(maxsize = None)
+        def isMatch(s1: str, s2: str) -> bool:
+            length = len(s1)
 
-        if length != len(s2):
-            return False
-
-        if s1 == s2:
-            return True
-
-        if length == 2 and s1[0] == s2[1] and s1[1] == s2[0]:
-            return True
-        
-
-        for i in range(1, length):
-            if (
-                self.isScramble(s1[0:i], s2[0:i]) and self.isScramble(s1[i:], s2[i:])
-                or self.isScramble(s1[0:i], s2[length - i:]) and self.isScramble(s1[i:], s2[0: length - i])
-            ):
+            if s1 == s2:
                 return True
+                
+            if Counter(s1) != Counter(s2):
+                return False
 
-        return False
+            if length == 2 and s1[0] == s2[1] and s1[1] == s2[0]:
+                return True
+            
+            for i in range(1, length):
+                if (
+                    isMatch(s1[0:i], s2[0:i]) and isMatch(s1[i:], s2[i:])
+                    or isMatch(s1[0:i], s2[length - i:]) and isMatch(s1[i:], s2[0: length - i])
+                ):
+                    return True
+
+            return False
+        
+        return isMatch(s1, s2)
 
 ###############################################################################
 
