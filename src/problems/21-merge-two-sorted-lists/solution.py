@@ -9,6 +9,7 @@ from structures.list import ListNode, printList, createList
 from typing import Optional
 
 class Solution:
+    
     def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]: 
         head = None
         tail = None
