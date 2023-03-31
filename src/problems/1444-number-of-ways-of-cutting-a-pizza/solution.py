@@ -8,51 +8,50 @@ sys.path.append(root)
 ###############################################################################
 
 from typing import List
+from functools import cache
 
 class Solution:
-    def ways(self, pizza: List[str], k: int, top = 0, left = 0) -> int:
-        if top == len(pizza) or left == len(pizza[0]):
-            return 0
+    def ways(self, pizza: List[str], k: int) -> int:
+        rows = len(pizza)
+        cols = len(pizza[0])
 
-        if not self.containsApple(pizza, top, left, len(pizza), len(pizza[0])):
-            return 0
+        apples = [[0] * (cols + 1) for row in range(rows + 1)]
 
-        if k == 1:
-            return 1
+        for row in range(rows - 1, -1, -1):
+            for col in range(cols - 1, -1, -1):
+                apples[row][col] = ((pizza[row][col] == "A")
+                    + apples[row + 1][col]
+                    + apples[row][col + 1]
+                    - apples[row + 1][col + 1])
 
-        result = 0
+        dp = [[[0 for col in range(cols)] for row in range(rows)] for remain in range(k)]
+        dp[0] = [[int(apples[row][col] > 0) for col in range(cols)] for row in range(rows)]
 
-        for i in range(top + 1, len(pizza)):
-            if self.containsApple(pizza, top, left, i, len(pizza[0])):
-                result += self.ways(pizza, k - 1, i, left)
+        mod = 1000000007
 
-        for i in range(left + 1, len(pizza[0])):
-            if self.containsApple(pizza, top, left, len(pizza), i):
-                result += self.ways(pizza, k - 1, top, i)
+        for remain in range(1, k):
+            for row in range(rows):
+                for col in range(cols):
+                    val = 0
 
-        return result
+                    for next_row in range(row + 1, row):
+                        if apples[row][col] - apples[next_row][col] > 0:
+                            val += dp[remain - 1][next_row][col]
 
-    def containsApple(self, pizza: List[str], top: int, left: int, bottom: int, right: int) -> bool:
-        for i in range(top, bottom):
-            if "A" in pizza[i][left:right]:
-                return True
+                    for next_col in range(col + 1, cols):
+                        if apples[row][col] - apples[row][next_col] > 0:
+                            val += dp[remain - 1][row][next_col]
 
-        return False
+                    dp[remain][row][col] = val % mod
+
+        return dp[k - 1][0][0]
+
 
 ###############################################################################
 
 import unittest
 
 class SolutionTest(unittest.TestCase):
-    def test_containsApple(self):
-        solution = Solution()
-
-        self.assertEqual(solution.containsApple(["AA",".."], 0, 0, 2, 2), True)
-        self.assertEqual(solution.containsApple(["AA",".."], 1, 0, 2, 2), False)
-        self.assertEqual(solution.containsApple(["AA",".."], 0, 1, 2, 2), True)
-        self.assertEqual(solution.containsApple(["AA",".."], 1, 1, 2, 2), False)
-
-
     def test_ways(self):
         solution = Solution()
 
