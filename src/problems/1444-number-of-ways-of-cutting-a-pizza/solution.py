@@ -34,7 +34,7 @@ class Solution:
                 for col in range(cols):
                     val = 0
 
-                    for next_row in range(row + 1, row):
+                    for next_row in range(row + 1, rows):
                         if apples[row][col] - apples[next_row][col] > 0:
                             val += dp[remain - 1][next_row][col]
 
