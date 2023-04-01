@@ -11,9 +11,12 @@ from typing import List
 from functools import cache
 
 class Solution:
-    @cache
+    def __init__(self):
+        self.memo = {}
+
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        cnt = len(candidates)
+        if target in self.memo:
+            return self.memo[target]
 
         ans = [];
 
@@ -24,9 +27,14 @@ class Solution:
                 ans.append([c])
             elif remain > 0:
                 nextCombs = self.combinationSum(candidates, remain)
+                
                 for comb in nextCombs:
-                    comb.append(c)
-                    ans.append(comb)
+                    ans.append(comb + [c])
+                
+                if len(nextCombs):
+                    break;
+
+        self.memo[target] = ans
 
         return ans
 
