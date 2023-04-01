@@ -12,35 +12,32 @@ from functools import cache
 
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        memo = {}    
+        ans = []
 
-        def findCombinations(nums: List[int], target: int) -> List[List[int]]:
-            if target in memo:
-                return memo[target]
+        def solve(i: int, arr: List[List[int]], temp: List[int], target: int):
+            if target == 0:
+                ans.append(temp.copy())
+                return
 
-            ans = [];
+            if target < 0:
+                return
+            
+            if i == len(arr):
+                return
+            
+            solve(i + 1, arr, temp, target)
 
-            for c in candidates:
-                remain = target - c;
+            temp.append(arr[i])
 
-                if remain == 0:
-                    ans.append([c])
-                elif remain > 0:
-                    nextCombs = self.combinationSum(candidates, remain)
-                    
-                    for comb in nextCombs:
-                        ans.append(comb + [c])
-                else:
-                    break
+            solve(i, arr, temp, target - arr[i])
 
-            memo[target] = ans
+            temp.pop()
 
-            return ans
-        
-        candidates.sort()
+        temp = []
 
-        return findCombinations(candidates, target)
+        solve(0, candidates, temp, target)
 
+        return ans
 ###############################################################################
 
 import unittest
@@ -56,12 +53,12 @@ class SolutionTest(unittest.TestCase):
 
         self.assertEqual(
             solution.combinationSum([2,3,6,7], 7),
-            [[3,2,2], [7]]
+            [[7], [2,2,3]]
         )
 
         self.assertEqual(
             solution.combinationSum([2,3,5], 8),
-            [[2, 2, 2, 2], [3,2,2], [3, 5]]
+            [[3, 5], [2, 3, 3], [2, 2, 2, 2]]
         )
         
 
