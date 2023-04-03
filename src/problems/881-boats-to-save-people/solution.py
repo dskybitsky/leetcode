@@ -25,7 +25,7 @@ class Solution:
 
             if left <= right and people[right] <= rem:
                 right -= 1
-        
+
             ans += 1
 
         return ans
