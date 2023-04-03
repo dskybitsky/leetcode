@@ -11,19 +11,24 @@ from typing import List
 
 class Solution:
     def numRescueBoats(self, people: List[int], limit: int) -> int:
-        people.sort()
-        total = len(people)
-        
         ans = 0
-        
-        for i in range(total):
-            if i < total - 1 and people[i] + people[i + 1] <= limit:
-                i += 1
 
+        people.sort(reverse = True)
+
+        left = 0
+        right = len(people) - 1
+
+        while left <= right:
+            rem = limit - people[left]
+
+            left += 1
+
+            if left <= right and people[right] <= rem:
+                right -= 1
+        
             ans += 1
 
-        return ans       
-        
+        return ans
 
 ###############################################################################
 
