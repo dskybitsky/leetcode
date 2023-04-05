@@ -29,11 +29,14 @@ class Solution:
                 ))
             else:
                 self.dec_dict(chunk_words_dicts[p % word_len], s[p - word_len:p])
-                self.inc_dict(chunk_words_dicts[p % word_len], s[p:p + word_len])
+                self.inc_dict(
+                    chunk_words_dicts[p % word_len], 
+                    s[p + words_len - word_len:p + words_len]
+                )
 
             if chunk_words_dicts[p % word_len] == words_dict:
                 ans.append(p)
-            
+
             p += 1
 
         chunk_words_dict = self.create_words_dict(
