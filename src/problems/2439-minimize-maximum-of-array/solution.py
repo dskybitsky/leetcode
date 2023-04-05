@@ -14,19 +14,14 @@ class Solution:
     def minimizeArrayValue(self, nums: List[int]) -> int:
         i = 1
 
-        swapped = False
-
         while i < len(nums):
             if nums[i - 1] < nums[i]:
                 avg = ceil((nums[i - 1] + nums[i]) / 2)
                 nums[i] -= (avg - nums[i - 1])
                 nums[i - 1] = avg
-                swapped = True
-
-            i += 1
-
-        if swapped:
-            return self.minimizeArrayValue(nums)
+                i = 1
+            else:
+                i += 1
 
         return nums[0]
 
