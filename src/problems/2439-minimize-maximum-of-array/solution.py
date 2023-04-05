@@ -12,18 +12,17 @@ from math import ceil
 
 class Solution:
     def minimizeArrayValue(self, nums: List[int]) -> int:
-        i = 1
+        sum = 0
+        max = 0
 
-        while i < len(nums):
-            if nums[i - 1] < nums[i]:
-                avg = ceil((nums[i - 1] + nums[i]) / 2)
-                nums[i] -= (avg - nums[i - 1])
-                nums[i - 1] = avg
-                i = 1
-            else:
-                i += 1
+        for i in range(len(nums)):
+            sum += nums[i]
+            avg = ceil(sum / (i + 1))
 
-        return nums[0]
+            if (avg > max):
+                max = avg
+
+        return max
 
 ###############################################################################
 
