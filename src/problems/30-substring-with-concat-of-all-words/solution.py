@@ -7,77 +7,77 @@ sys.path.append(root)
 
 ###############################################################################
 
-from typing import List
+from typing import Dict, List
 
 class Solution:
     def findSubstring(self, s: str, words: List[str]) -> List[int]:
-        words_map = self.create_words_map(words)
+        words_dict = self.create_words_dict(words)
 
-        words_letters_map = {}
+        words_letters_dict = {}
 
         for word in words:
             for letter in word:
-                self.inc_map(words_letters_map, letter)
+                self.inc_dict(words_letters_dict, letter)
 
         word_len = len(words[0])
         words_len = len(words) * word_len
 
-        chunk_letters_map = {}
+        chunk_letters_dict = {}
 
         if len(s)< words_len:
             return []
 
         for i in range(0, words_len):
-            self.inc_map(chunk_letters_map, s[i])
+            self.inc_dict(chunk_letters_dict, s[i])
 
         ans = []
 
         p = 0
 
         while p < len(s) - words_len:
-            if chunk_letters_map == words_letters_map:
-                chunk_words_map = self.create_words_map(
+            if chunk_letters_dict == words_letters_dict:
+                chunk_words_dict = self.create_words_dict(
                     self.split_string(s, p, words_len, word_len)
                 )
 
-                if chunk_words_map == words_map:
+                if chunk_words_dict == words_dict:
                     ans.append(p)
 
-            self.dec_map(chunk_letters_map, s[p])
+            self.dec_dict(chunk_letters_dict, s[p])
 
-            self.inc_map(chunk_letters_map, s[p + words_len])
+            self.inc_dict(chunk_letters_dict, s[p + words_len])
             
             p += 1
 
-        if chunk_letters_map == words_letters_map:
-            chunk_words_map = self.create_words_map(
+        if chunk_letters_dict == words_letters_dict:
+            chunk_words_dict = self.create_words_dict(
                 self.split_string(s, p, words_len, word_len)
             )
 
-            if chunk_words_map == words_map:
+            if chunk_words_dict == words_dict:
                 ans.append(p)
 
         return ans
     
-    def inc_map(self, map: dict[str, int], letter: str):
-        map[letter] = map[letter] + 1 if letter in map else 1
+    def inc_dict(self, dict: Dict[str, int], letter: str):
+        dict[letter] = dict[letter] + 1 if letter in dict else 1
 
-    def dec_map(self, map: dict[str, int], letter: str):
-        map[letter] -= 1
+    def dec_dict(self, dict: Dict[str, int], letter: str):
+        dict[letter] -= 1
 
-        if map[letter] == 0:
-            map.pop(letter)
+        if dict[letter] == 0:
+            dict.pop(letter)
 
     def split_string(self, s: str, offset: int, length: int, chunk_size: int) -> List[str]:
         return [s[i:i+chunk_size] for i in range(offset, offset + length, chunk_size)]
     
-    def create_words_map(self, words: List[str]) -> dict[str, int]:
-        words_map = {}
+    def create_words_dict(self, words: List[str]) -> Dict[str, int]:
+        words_dict = {}
 
         for word in words:
-            words_map[word] = words_map[word] + 1 if word in words_map else 1
+            words_dict[word] = words_dict[word] + 1 if word in words_dict else 1
 
-        return words_map
+        return words_dict
 
 
 ###############################################################################
