@@ -12,21 +12,23 @@ from math import ceil
 
 class Solution:
     def minimizeArrayValue(self, nums: List[int]) -> int:
-        max = nums[0]
-        
-        for i in range(1, len(nums)):
-            prev = nums[i  - 1]
-            curr = nums[i]
+        i = 1
 
-            if prev > curr:
-                continue
+        swapped = False
 
-            min = ceil((curr + prev) / 2)
+        while i < len(nums):
+            if nums[i - 1] < nums[i]:
+                avg = ceil((nums[i - 1] + nums[i]) / 2)
+                nums[i] -= (avg - nums[i - 1])
+                nums[i - 1] = avg
+                swapped = True
 
-            if min > max:
-                max = min
+            i += 1
 
-        return max
+        if swapped:
+            return self.minimizeArrayValue(nums)
+
+        return nums[0]
 
 ###############################################################################
 
