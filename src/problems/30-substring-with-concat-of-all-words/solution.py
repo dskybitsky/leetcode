@@ -77,17 +77,17 @@ class SolutionTest(unittest.TestCase):
     def test_findSubstring(self):
         solution = Solution()
 
-        # self.assertEqual(solution.findSubstring("a", ["a","a"]), [])
+        self.assertEqual(solution.findSubstring("a", ["a","a"]), [])
 
-        # self.assertEqual(solution.findSubstring("wordgoodgoodgoodbestword", ["word","good","best","good"]), [8])
+        self.assertEqual(solution.findSubstring("wordgoodgoodgoodbestword", ["word","good","best","good"]), [8])
 
-        # self.assertEqual(
-        #     solution.findSubstring(
-        #         "lingmindraboofooowingdingbarrwingmonkeypoundcake", 
-        #         ["fooo","barr","wing","ding","wing"]
-        #     ),
-        #     [13]
-        # )
+        self.assertEqual(
+            solution.findSubstring(
+                "lingmindraboofooowingdingbarrwingmonkeypoundcake", 
+                ["fooo","barr","wing","ding","wing"]
+            ),
+            [13]
+        )
 
         self.assertEqual(solution.findSubstring("barfoothefoobarman", ["foo","bar"]), [0, 9])
         self.assertEqual(solution.findSubstring("wordgoodgoodgoodbestword", ["word","good","best","word"]), [])
