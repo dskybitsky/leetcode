@@ -17,9 +17,7 @@ class Solution:
 
         for word in words:
             for letter in word:
-                words_letters_map[letter] = (
-                    words_letters_map[letter] + 1 if letter in words_letters_map else 1
-                )
+                self.inc_map(words_letters_map, letter)
 
         word_len = len(words[0])
         words_len = len(words) * word_len
@@ -30,9 +28,7 @@ class Solution:
             return []
 
         for i in range(0, words_len):
-            chunk_letters_map[s[i]] = (
-                chunk_letters_map[s[i]] + 1 if s[i] in chunk_letters_map else 1
-            )
+            self.inc_map(chunk_letters_map, s[i])
 
         ans = []
 
@@ -41,28 +37,21 @@ class Solution:
         while p < len(s) - words_len:
             if chunk_letters_map == words_letters_map:
                 chunk_words_map = self.create_words_map(
-                    self.split_string(s[p:p + words_len], word_len)
+                    self.split_string(s, p, words_len, word_len)
                 )
 
                 if chunk_words_map == words_map:
                     ans.append(p)
 
-            chunk_letters_map[s[p]] -= 1
+            self.dec_map(chunk_letters_map, s[p])
 
-            if chunk_letters_map[s[p]] == 0:
-                chunk_letters_map.pop(s[p])
-
-            next_letter = s[p + words_len]
-
-            chunk_letters_map[next_letter] = (
-                chunk_letters_map[next_letter] + 1 if next_letter in chunk_letters_map else 1
-            )   
-
+            self.inc_map(chunk_letters_map, s[p + words_len])
+            
             p += 1
 
         if chunk_letters_map == words_letters_map:
             chunk_words_map = self.create_words_map(
-                self.split_string(s[p:p + words_len], word_len)
+                self.split_string(s, p, words_len, word_len)
             )
 
             if chunk_words_map == words_map:
@@ -70,8 +59,17 @@ class Solution:
 
         return ans
     
-    def split_string(self, s: str, chunk_size: int) -> List[str]:
-        return [s[i:i+chunk_size] for i in range(0, len(s), chunk_size)]
+    def inc_map(self, map: dict[str, int], letter: str):
+        map[letter] = map[letter] + 1 if letter in map else 1
+
+    def dec_map(self, map: dict[str, int], letter: str):
+        map[letter] -= 1
+
+        if map[letter] == 0:
+            map.pop(letter)
+
+    def split_string(self, s: str, offset: int, length: int, chunk_size: int) -> List[str]:
+        return [s[i:i+chunk_size] for i in range(offset, offset + length, chunk_size)]
     
     def create_words_map(self, words: List[str]) -> dict[str, int]:
         words_map = {}
