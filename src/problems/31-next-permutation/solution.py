@@ -11,21 +11,39 @@ from typing import Dict, List
 
 class Solution:
     def nextPermutation(self, nums: List[int]) -> None:
-        for i in range(len(nums) - 1, 0, -1):
-            if nums[i - 1] < nums[i]:
-                temp = nums[i - 1]
-                nums[i - 1] = nums[i]
-                nums[i] = temp
+        total = len(nums)
 
-                return
-        
+        for i in range(total - 1, 0, -1):
+            if nums[i - 1] < nums[i]:
+                    nums[i:] = sorted(nums[i:])
+
+                    for j in range(i, total):
+                        if nums[i - 1] < nums[j]:
+                            self.swap(nums, i - 1, j)
+                            return
+    
         nums.sort()
+
+    def swap(self, nums: List[int], i: int, j: int) -> None:
+        temp = nums[i]
+        nums[i] = nums[j]
+        nums[j] = temp
 
 ###############################################################################
 
 import unittest
 
 class SolutionTest(unittest.TestCase):
+    
+    def test_nextPermutation_c(self):
+        solution = Solution()
+        
+        nums = [4,2,0,2,3,2,0]
+
+        solution.nextPermutation(nums)
+
+        self.assertEqual(nums, [4,2,0,3,0,2,2])
+
     def test_nextPermutation_2(self):
         solution = Solution()
 
@@ -47,6 +65,10 @@ class SolutionTest(unittest.TestCase):
         solution.nextPermutation(nums)
 
         self.assertEqual(nums, [1, 3, 2])
+
+        solution.nextPermutation(nums)
+
+        self.assertEqual(nums, [2, 1, 3])
 
         solution.nextPermutation(nums)
 
