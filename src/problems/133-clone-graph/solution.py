@@ -5,4 +5,21 @@ class Node:
 
 class Solution:
     def cloneGraph(self, node: 'Node') -> 'Node':
-        return node
+        visited = {}
+
+        if node == None:
+            return None
+
+        return self.cloneNode(node, visited)
+
+    def cloneNode(self, node: 'Node', visited: dict[int, 'Node']) -> 'Node':
+        clone = Node(node.val)
+
+        visited[clone.val] = clone
+
+        for n in node.neighbors:
+            clone.neighbors.append(
+                visited[n.val] if n.val in visited else self.cloneNode(n, visited)
+            )
+
+        return clone
