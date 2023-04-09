@@ -2,70 +2,52 @@ from typing import List, Set, Dict
 from collections import Counter
 
 class Solution:
-    def largestPathValue(self, colors: str, edges: List[List[int]]) -> int:    			
-
-      def colorLeaves(node: int, color: str = ""):
-        color += colors[node]
-
-        if node in map:
-          for adjNode in map[node]:
-            colorLeaves(adjNode, color)
-        else:
-          if not node in leavesColors:
-            leavesColors[node] = set()
-            
-          leavesColors[node].add(color)
-
+    def largestPathValue(self, colors: str, edges: List[List[int]]) -> int:
       n = len(colors)
-      map = self.buildAdjMap(edges)
-      roots = self.findRoots(edges, n)
-
-      if len(roots) == 0:
-        return -1
-
-      leavesColors = { }
-
-      for root in roots:
-        colorLeaves(root)	
-
-      max = 0
-
-      for leaf in leavesColors:
-        for leafColor in leavesColors[leaf]:
-          counter = Counter(leafColor)
-          leafMax = counter.most_common(1)[0][1]
-          max = max if max > leafMax else leafMax
-
-      return max
-    
-    def buildAdjMap(self, edges: List[List[int]]) -> Dict[int, Set[int]]:
-      map = {}
-
+      adj = [[] for i in range(n)]
+      indegree = [0 for i in range(n)]
+      
       for edge in edges:
-        n1 = edge[0]
-        n2 = edge[1]
+        adj[edge[0]].append(edge[1])
+        indegree[edge[1]] += 1
 
-        if not n1 in map:
-          map[n1] = set()
+      count = [[0 for i in range(26)] for j in range(n)]
+      
+      q = []
+      
+      for i in range(n):
+        if indegree[i] == 0:
+          q.append(i)
+          
+      answer = 0
+      nodesSeen = 0
+      
+      while len(q) > 0:
+        node = q.pop()
+        nodeColorIndex = ord(colors[node]) - ord('a')
 
-        map[n1].add(n2)
+        count[node][nodeColorIndex] += 1
+        answer = max(answer, count[node][nodeColorIndex])
+        
+        nodesSeen += 1
+        
+        for neighbor in adj[node]:
+          for i in range(26):
+            count[neighbor][i] = max(count[neighbor][i], count[node][i])
+        
+          indegree[neighbor] -= 1
+          
+          if indegree[neighbor] == 0:
+            q.append(neighbor)
 
-      return map
-    
-    def findRoots(self, edges: List[List[int]], n: int) -> Set[int]:
-      roots = set(i for i in range(n))
-
-      for edge in edges:
-        if edge[1] in roots:
-          roots.remove(edge[1])
-    
-      return roots
+      return answer if nodesSeen >= n else -1
 
 if __name__ == '__main__':
   sol = Solution()
 
-  assert sol.largestPathValue("hhqhuqhqff", [[0,1],[0,2],[2,3],[3,4],[3,5],[5,6],[2,7],[6,7],[7,8],[3,8],[5,8],[8,9],[3,9],[6,9]]) == 3
-
   assert sol.largestPathValue("abaca", [[0,1],[0,2],[2,3],[3,4]]) == 3
 
   assert sol.largestPathValue("a", [[0,0]]) == -1
+  
+  assert sol.largestPathValue("hhqhuqhqff", [[0,1],[0,2],[2,3],[3,4],[3,5],[5,6],[2,7],[6,7],[7,8],[3,8],[5,8],[8,9],[3,9],[6,9]]) == 3
+
