@@ -2,18 +2,15 @@ class Solution:
     def longestValidParentheses(self, s: str) -> int:
         stack = []
 
-        def stack_last(offset = 1):
-            return stack[len(stack) - offset] if len(stack) - offset >= 0 else None
-
         result = 0
 
         for c in s:
-            top = stack_last()
+            stack_len = len(stack)
 
-            if c == ')':
-                prevTop = stack_last(2)
+            if c == ')' and stack_len > 0:
+                top = stack[-1]
 
-                if top == '(' or isinstance(top, int) and prevTop == '(':
+                if top == '(' or isinstance(top, int) and stack_len > 1 and stack[-2] == '(':
                     if isinstance(top, int):
                         stack.pop()
                         stack.pop()
@@ -24,9 +21,8 @@ class Solution:
 
                     size += 2
 
-                    while isinstance(stack_last(), int):
-                        size += stack_last()
-                        stack.pop()
+                    while len(stack) > 0 and isinstance(stack[-1], int):
+                        size += stack.pop()
 
                     result = max(result, size)
 
