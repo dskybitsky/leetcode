@@ -21,10 +21,10 @@ class Solution:
 
             if target < 0:
                 return
-            
+
             if i == len(arr):
                 return
-            
+
             solve(i + 1, arr, temp, target)
 
             temp.append(arr[i])

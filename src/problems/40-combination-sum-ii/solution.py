@@ -1,11 +1,20 @@
 from typing import List
+from collections import Counter
 
 class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
 
         result = []
 
-        def solve(i: int, accum: List[int], target: int):
+        cand_dict = Counter(candidates)
+        cand_keys = list(cand_dict.keys())
+
+        def solve(i: int, accum: List[int], accum_dict: dict[int,int], target: int):
+            if i == len(cand_keys):
+                return
+
+            cand_key = cand_keys[i]
+
             if target == 0:
                 result.append(accum.copy())
                 return
@@ -13,22 +22,22 @@ class Solution:
             if target < 0:
                 return
 
-            if i == len(candidates):
-                return
+            solve(i + 1, accum, accum_dict, target)
 
-            solve(i + 1, accum, target)
+            if not cand_key in accum_dict:
+                accum_dict[cand_key] = 0
 
-            accum.append(candidates[i])
-
-            solve(i + 1, accum, target - candidates[i])
-
-            accum.pop()
+            if accum_dict[cand_key] < cand_dict[cand_key]:
+                accum.append(cand_key)
+                accum_dict[cand_key] += 1
+                solve(i, accum, accum_dict, target - cand_key)
+                accum.pop()
+                accum_dict[cand_key] -= 1
 
         accum = []
+        accum_dict = {}
 
-        candidates.sort()
-
-        solve(0, accum, target)
+        solve(0, accum, accum_dict, target)
 
         return result
 
@@ -36,13 +45,13 @@ if __name__ == '__main__':
     sol = Solution()
 
     assert sol.combinationSum2([2,5,2,1,2], 5) == [
-        [1,2,2],
-        [5]
+        [5],
+        [2,2, 1],
     ]
 
     assert sol.combinationSum2([10,1,2,7,6,1,5], 8) == [
-        [1,1,6],
-        [1,2,5],
+        [2,6],
         [1,7],
-        [2,6]
+        [1,2,5],
+        [1,1,6],
     ]
