@@ -23,7 +23,7 @@ class Solution:
             stack.append(part)
 
         return "/" + "/".join(stack)
-    
+
 if __name__ == '__main__':
     sol = Solution()
 
