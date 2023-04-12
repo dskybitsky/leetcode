@@ -2,7 +2,16 @@ from typing import List
 
 class Solution:
     def jump(self, nums: List[int]) -> int:
-        return 0
+        n = len(nums)
+        dp = [n for i in range(n)]
+
+        dp[0] = 0
+
+        for i in range(n):
+            for j in range(i + 1, min(i + nums[i] +  1, n)):
+                dp[j] = min(dp[j], dp[i] + 1)
+
+        return dp[n - 1]
 
 if __name__ == '__main__':
     sol = Solution()
