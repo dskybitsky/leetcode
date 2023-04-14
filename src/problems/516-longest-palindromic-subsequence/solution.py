@@ -2,22 +2,23 @@ class Solution:
     def longestPalindromeSubseq(self, s: str) -> int:
         n = len(s)
 
-        sr = s[::-1]
+        dp = [[0 for i in range(n)] for j in range(n)]
 
-        dp = [[0 for i in range(n + 1)] for j in range(n + 1)]
+        for i in range(n - 1, -1, -1):
+            dp[i][i] = 1
 
-        for i in range(n):
-            for j in range(n):
-                if s[i] == sr[j]:
-                    dp[i + 1][j + 1] = dp[i][j] + 1
+            for j in range(i + 1, n):
+                if s[i] == s[j]:
+                    dp[i][j] = 2 + dp[i + 1][j - 1]
                 else:
-                    dp[i + 1][j + 1] = max(dp[i][j + 1], dp[i + 1][j])
+                    dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
 
-        return dp[n][n]
+        return dp[0][n - 1]
 
 
 if __name__ == '__main__':
     sol = Solution()
 
+    assert sol.longestPalindromeSubseq("aabaa") == 5
     assert sol.longestPalindromeSubseq("bbbab") == 4
     assert sol.longestPalindromeSubseq("cbbd") == 2
