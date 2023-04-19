@@ -28,7 +28,6 @@ class Solution:
 
 
 if __name__ == '__main__':
-
     sol = Solution()
 
     assert sol.validateStackSequences([1, 2, 3, 4, 5], [4, 5, 3, 2, 1]) is True
