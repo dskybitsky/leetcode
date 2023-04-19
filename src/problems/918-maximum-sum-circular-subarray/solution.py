@@ -1,31 +1,35 @@
 from typing import List
 
 class Solution:
-    def maxSubarraySumCircular(self, nums: List[int]) -> int:
-        n = len(nums)
+    def maxSubArray(self, nums: List[int]) -> int:
+        sum = 0;
+        ans = -10001
 
-        dp = [0] * n
+        for num in nums:
+            sum += num
+            ans = max(ans, sum)
 
-        ans = nums[0]
-
-        for j in range(n):
-            dp[0] = nums[j]
-
-            ans = max(ans, dp[0])
-
-            k = 1
-
-            for i in range(j + 1, n):
-                dp[k] = max(nums[i], nums[i] + dp[k - 1])
-                ans = max(ans, dp[k])
-                k += 1
-
-            for i in range(j):
-                dp[k] = max(nums[i], nums[i] + dp[k - 1])
-                ans = max(ans, dp[k])
-                k += 1
+            if sum < 0:
+                sum = 0
 
         return ans
+
+    def maxSubarraySumCircular(self, nums: List[int]) -> int:
+        non_circ_sum = self.maxSubArray(nums)
+
+        n = len(nums)
+        total_sum = 0
+
+        for i in range(n):
+            total_sum += nums[i]
+            nums[i] = -nums[i]
+
+        circ_sum = total_sum + self.maxSubArray(nums)
+
+        if circ_sum == 0:
+            return non_circ_sum
+
+        return max(circ_sum, non_circ_sum)
 
 
 if __name__ == '__main__':

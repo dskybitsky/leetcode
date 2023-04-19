@@ -3,20 +3,17 @@ from typing import List
 
 class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
-        n = len(nums)
+        sum = 0;
+        ans = -10001
 
-        dp = [0] * n
+        for num in nums:
+            sum += num
+            ans = max(ans, sum)
 
-        dp[0] = nums[0]
-
-        ans = dp[0]
-
-        for i in range(1, n):
-            dp[i] = max(nums[i], nums[i] + dp[i - 1])
-            ans = max(ans, dp[i])
+            if sum < 0:
+                sum = 0
 
         return ans
-
 
 if __name__ == '__main__':
     sol = Solution()
