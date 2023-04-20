@@ -12,56 +12,31 @@ class Solution:
             return 0
         
         def get_width(indexes: List[int]) -> int:
-            left = -1
-            right = -1
-
-            n = len(indexes)
-
-            for i in range(n):
-                if indexes[i] == 1:
-                    left = i
-                    break
-            
-            if left < 0:
-                return 0
-            
-            for i in range(n - 1, -1, -1):
-                if indexes[i] == 1:
-                    right = i
-                    break
-            
-            if right == left:
-                return 1
-
-            return right - left + 1
+            return indexes[-1] - indexes[0] + 1
         
         nodes = [root]
         indexes = [1]
 
-        has_more_nodes = True
-
         ans = 0
 
-        while has_more_nodes:
-            has_more_nodes = False
-
+        while len(indexes) > 0:
             ans = max(ans, get_width(indexes))
 
             next_nodes = []
             next_indexes = []
 
             for i in range(len(nodes)):
-                if nodes[i] is not None:
-                    next_nodes.append(nodes[i].left)
-                    next_nodes.append(nodes[i].right)
-                    next_indexes.append(1 if nodes[i].left is not None else 0)
-                    next_indexes.append(1 if nodes[i].right is not None else 0)
-                    has_more_nodes = True
-                else:
-                    next_nodes.append(None)
-                    next_nodes.append(None)
-                    next_indexes.append(0)
-                    next_indexes.append(0)
+                node = nodes[i]
+                
+                next_index = indexes[i] * 2
+
+                if node.left is not None:
+                    next_nodes.append(node.left)
+                    next_indexes.append(next_index - 1)
+
+                if node.right is not None:
+                    next_nodes.append(node.right)
+                    next_indexes.append(next_index)
             
             nodes = next_nodes.copy()
             indexes = next_indexes.copy()
