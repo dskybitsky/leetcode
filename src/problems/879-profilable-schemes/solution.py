@@ -14,15 +14,22 @@ class Solution:
     ) -> int:
         if index == len(group):
             return 1 if profit >= minProfit else 0
+        
+        if self.memo[index][count][profit] != -1:
+            return self.memo[index][count][profit]
 
         res = self.find(index + 1, count, profit, n, minProfit, group, profits)
 
         if count + group[index] <= n:
-            res += self.find(index + 1, count + group[index], profit + profits[index], n, minProfit, group, profits)
+            res += self.find(index + 1, count + group[index], min(minProfit, profit + profits[index]), n, minProfit, group, profits)
 
-        return res
+        self.memo[index][count][profit] = res % 1000000007
+
+        return self.memo[index][count][profit]
 
     def profitableSchemes(self, n: int, minProfit: int, group: List[int], profits: List[int]) -> int:
+       self.memo = [ [ [-1] * (minProfit + 1) for _ in range(n + 1)] for _ in range(len(group) + 1)]
+
        return self.find(0, 0, 0, n, minProfit, group, profits)
 
 
