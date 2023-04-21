@@ -19,7 +19,6 @@ class Solution:
                         dp[i][cnt][p] = (
                             dp[i][cnt][p] + dp[i + 1][cnt + group[i]][min(minProfit, p + profit[i])]
                         ) % 1000000007
-        
     
         return dp[0][0][0]
 
