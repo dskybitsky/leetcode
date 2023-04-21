@@ -2,25 +2,28 @@ from typing import List
 
 
 class Solution:
-    def profitableSchemes(self, n: int, minProfit: int, group: List[int], profit: List[int]) -> int:
-        m = len(group)
+    def find(
+        self,
+        index: int,
+        count: int,
+        profit: int,
+        n: int,
+        minProfit: int,
+        group: List[int],
+        profits: List[int]
+    ) -> int:
+        if index == len(group):
+            return 1 if profit >= minProfit else 0
 
-        dp = [[[0] * (minProfit + 1) for _ in range(n + 1)] for _ in range(m + 1)]
+        res = self.find(index + 1, count, profit, n, minProfit, group, profits)
 
-        for cnt in range(n + 1):
-            dp[m][cnt][minProfit] = 1
+        if count + group[index] <= n:
+            res += self.find(index + 1, count + group[index], profit + profits[index], n, minProfit, group, profits)
 
-        for i in range(m - 1, -1, -1):
-            for cnt in range(n + 1):
-                for p in range(minProfit + 1):
-                    dp[i][cnt][p] = dp[i + 1][cnt][p]
+        return res
 
-                    if cnt + group[i] <= n:
-                        dp[i][cnt][p] = (
-                            dp[i][cnt][p] + dp[i + 1][cnt + group[i]][min(minProfit, p + profit[i])]
-                        ) % 1000000007
-    
-        return dp[0][0][0]
+    def profitableSchemes(self, n: int, minProfit: int, group: List[int], profits: List[int]) -> int:
+       return self.find(0, 0, 0, n, minProfit, group, profits)
 
 
 if __name__ == '__main__':
