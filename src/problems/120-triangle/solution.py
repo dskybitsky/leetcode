@@ -14,7 +14,7 @@ class Solution:
             for j in range(1, m - 1):
                 triangle[i][j] += min(triangle[i - 1][j - 1], triangle[i - 1][j])
 
-        return min(triangle[n -1])
+        return min(triangle[n - 1])
     
 
 if __name__ == '__main__':
