@@ -1,6 +1,5 @@
 from typing import List
 import heapq
-import math
 
 
 class Solution:
