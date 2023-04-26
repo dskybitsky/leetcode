@@ -12,13 +12,19 @@ class Solution:
 
 
         ans = ""
+        ans_len = 0
 
         for i in range(n):
             for j in range(i, n):
-                s1 = s[i:j + 1]
 
-                if is_palindrome(s1) and len(s1) > len(ans):
-                    ans = s1
+                curr_len = j - i + 1
+
+                if curr_len > ans_len:
+                    s1 = s[i:j + 1]
+
+                    if is_palindrome(s1):
+                        ans = s1
+                        ans_len = curr_len
 
         return ans
             
