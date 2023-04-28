@@ -2,11 +2,17 @@ from typing import List
 
 
 class Solution:
-    def swap_characters(self, s: str, i: int, j: int) -> str:
-        l = list(s)
-        l[i], l[j] = l[j], l[i]
-        
-        return ''.join(l)
+    def are_swap_one(self, s1: str, s2: str) -> bool:
+        num_diff = 0
+
+        for i in range(len(s1)):
+            if s1[i] != s2[i]:
+                num_diff += 1
+
+            if num_diff > 2:
+                return False
+            
+        return True
 
     def numSimilarGroups(self, strs: List[str]) -> int:
         n = len(strs[0])
@@ -22,14 +28,11 @@ class Solution:
 
             while len(strs_to_process) > 0:
                 s = strs_to_process.pop(0)
+                strs_index.discard(s)
 
-                for i in range(n - 1):
-                    for j in range(i + 1, n):
-                        s1 = self.swap_characters(s, i, j)
-
-                        if s1 in strs_index:
-                            strs_to_process.append(s1)
-                            strs_index.remove(s1)
+                for s1 in strs_index:
+                    if self.are_swap_one(s, s1):
+                        strs_to_process.append(s1)
 
         return ans
     
