@@ -3,15 +3,7 @@ from typing import List
 
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
-        wordIndex = set()
-
-        for word in wordDict:
-            n = len(word)
-
-            for i in range(1, n + 1):
-                wordIndex.add(word[:i])
-            
-            wordIndex.add(word + ".")
+        wordIndex = set(wordDict)
 
         memo = { }
 
@@ -21,22 +13,17 @@ class Solution:
 
             n = len(s)
 
-            if s + "." in wordIndex:
+            if s in wordIndex:
                 memo[s] = True
                 return True
 
             for i in range(1, n):
                 subs = s[:i]
 
-                if subs not in wordIndex:
-                    memo[s] = False
-                    return False
-                
-                if subs + "." in wordIndex:
-                    if solve(s[i:]):
-                        memo[s] = True
-                        return True
-            
+                if subs in wordIndex and solve(s[i:]):
+                    memo[s] = True
+                    return True
+
             memo[s] = False
 
             return False
