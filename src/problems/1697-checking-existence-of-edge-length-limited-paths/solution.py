@@ -1,45 +1,68 @@
 from typing import List
 
+class UnionFind:
+    def __init__(self, size: int):
+        self.group = [0] * size
+        self.rank = [0] * size
+
+        for i in range(size):
+            self.group[i] = i
+
+    def find(self, node: int) -> int:
+        if self.group[node] != node:
+            self.group[node] = self.find(self.group[node])
+
+        return self.group[node]
+
+    def join(self, node1: int, node2: int):
+        group1 = self.find(node1)
+        group2 = self.find(node2)
+
+        if group1 == group2:
+            return
+        
+        if self.rank[group1] > self.rank[group2]:
+            self.group[group2] = group1
+        elif self.rank[group1] < self.rank[group2]:
+            self.group[group1] = group2
+        else:
+            self.group[group1] = group2
+            self.rank[group2] += 1
+
+    def are_connected(self, node1: int, node2: int) -> bool:
+        return self.find(node1) == self.find(node2)
+
 
 class Solution:
-    def distanceLimitedPathsExist(self, n: int, edgeList: List[List[int]], queries: List[List[int]]) -> List[bool]:
-        graph = { }
-        
-        for v in range(n):
-            graph[v] = { v: 0 }
+    def distanceLimitedPathsExist(self, n: int, edge_list: List[List[int]], queries: List[List[int]]) -> List[bool]:
+        n_q = len(queries)
+        n_e = len(edge_list)
 
-        for edge in edgeList:
-            u, v = edge[0], edge[1]
+        queries_with_indices = [[] for _ in range(n_q)]
 
-            if u not in graph:
-                graph[u] = { }
+        for i in range(n_q):
+            queries_with_indices[i] = [queries[i][0], queries[i][1], queries[i][2], i]
 
-            if v not in graph:
-                graph[v] = { }
+        edge_list.sort(key = lambda x: x[2])
 
-            graph[u][v] = min(graph[u][v], edge[2]) if v in graph[u] else edge[2]
-            graph[v][u] = graph[u][v]
+        queries_with_indices.sort(key = lambda x: x[2])
 
-        def has_route(p: int, q: int, limit: int) -> bool:
-            to_visit = [p]
-            visited = set()
+        uf = UnionFind(n)
 
-            while len(to_visit) > 0:
-                u = to_visit.pop()
-                visited.add(u)
+        ans = [False] * n_q
 
-                if q in graph[u] and graph[u][q] < limit:
-                    return True
-                
-                for v in graph[u].keys():
-                    graph[p][v] = max(graph[p][v], graph[u][v]) if v in graph[p] else graph[u][v]
+        e_idx = 0
 
-                    if graph[u][v] < limit and v not in visited:
-                        to_visit.append(v)
+        for [p, q, limit, orig_idx] in queries_with_indices:
+            while e_idx < n_e and edge_list[e_idx][2] < limit:
+                node1 = edge_list[e_idx][0]
+                node2 = edge_list[e_idx][1]
 
-            return False
+                uf.join(node1, node2)
 
-        ans = list(map(lambda query: has_route(query[0], query[1], query[2]), queries))
+                e_idx += 1
+            
+            ans[orig_idx] = uf.are_connected(p, q)
 
         return ans
     
