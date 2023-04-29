@@ -29,11 +29,10 @@ class Solution:
                 visited.add(u)
 
                 if q in graph[u] and graph[u][q] < limit:
-                    # graph[p][q] = min(graph[p][q], graph[u][q]) if q in graph[p] else graph[u][q]
                     return True
                 
                 for v in graph[u].keys():
-                    # graph[p][v] = min(graph[p][v], graph[u][v]) if v in graph[p] else graph[u][v]
+                    graph[p][v] = max(graph[p][v], graph[u][v]) if v in graph[p] else graph[u][v]
 
                     if graph[u][v] < limit and v not in visited:
                         to_visit.append(v)
