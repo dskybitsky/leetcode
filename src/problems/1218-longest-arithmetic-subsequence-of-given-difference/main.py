@@ -1,4 +1,5 @@
 from typing import List
+import bisect
 
 
 class Solution:
@@ -7,10 +8,19 @@ class Solution:
 
         dp = [1] * n
 
+        hash = { }
+
         for i in range(n):
-            for j in range(i):
-                if arr[i] == arr[j] + difference:
+            diff = arr[i] - difference
+            
+            if diff in hash:
+                for j in hash[diff]:
                     dp[i] = max(dp[i], dp[j] + 1)
+            
+            if arr[i] in hash:
+                hash[arr[i]].append(i)
+            else:
+                hash[arr[i]] = [i]
 
         return max(dp)
 
