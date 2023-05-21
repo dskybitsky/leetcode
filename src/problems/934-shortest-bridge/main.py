@@ -10,79 +10,68 @@ class Solution:
         
         return []
 
+    def findAdjCells(self, i: int, j: int, n: int) -> List[List[int]]:
+        result = []
+
+        if i > 0:
+            result.append([i - 1, j])
+        
+        if i < n - 1:
+            result.append([i + 1, j])
+        
+        if j > 0:
+            result.append([i, j - 1])
+        
+        if j < n - 1:
+            result.append([i, j + 1])
+        
+        return result
+        
     def shortestBridge(self, grid: List[List[int]]) -> int:
         n = len(grid)
 
-        colors = [[None] * n for _ in range(n)]
-
         i1, j1 = self.findIsland(grid, n)
 
-        toVisit = [[i1, j1]]
-        toVisitNext = []
+        landQueue = [[i1, j1]]
+        waterQueue = [[i1, j1]]
+        grid[i1][j1] = 2
 
-        while len(toVisit) > 0:
-            i, j = toVisit.pop(0)
+        while landQueue:
+            nextLandQueue = []
 
-            colors[i][j] = 0
-
-            if i > 0 and colors[i - 1][j] is None:
-                if grid[i - 1][j] == 1:
-                    toVisit.append([i - 1, j])
-                else:
-                    toVisitNext.append([i - 1, j, 1])
-            
-            if i < n - 1 and colors[i + 1][j] is None:
-                if grid[i + 1][j] == 1:
-                    toVisit.append([i + 1, j])
-                else:
-                    toVisitNext.append([i + 1, j, 1])
-
-            if j > 0 and colors[i][j - 1] is None:
-                if grid[i][j - 1] == 1:
-                    toVisit.append([i, j - 1])
-                else:
-                    toVisitNext.append([i, j - 1, 1])
-            
-            if j < n - 1 and colors[i][j + 1] is None:
-                if grid[i][j + 1] == 1:
-                    toVisit.append([i, j + 1])
-                else:
-                    toVisitNext.append([i, j + 1, 1])
+            for i, j in landQueue:
+                for i1, j1 in self.findAdjCells(i, j, n):
+                    if grid[i1][j1] == 1:
+                        nextLandQueue.append([i1, j1])
+                        waterQueue.append([i1, j1])
+                        grid[i1][j1] = 2
+                
+            landQueue = nextLandQueue
         
-        while len(toVisitNext) > 0:
-            i, j, color = toVisitNext.pop(0)
+        dist = 0
 
-            colors[i][j] = color
+        while waterQueue:
+            nextWaterQueue = []
 
-            if i > 0 and colors[i - 1][j] is None:
-                if grid[i - 1][j] == 1:
-                    return color
-            
-                toVisitNext.append([i - 1, j, color + 1])
-            
-            if i < n - 1 and colors[i + 1][j] is None:
-                if grid[i + 1][j] == 1:
-                    return color
+            for wi, wj in waterQueue:
+                for wi1, wj1 in self.findAdjCells(wi, wj, n):
+                    if grid[wi1][wj1] == 1:
+                        return dist
 
-                toVisitNext.append([i + 1, j, color + 1])
+                    if grid[wi1][wj1] == 0:
+                        nextWaterQueue.append([wi1, wj1])
+                        grid[wi1][wj1] = -1
+                
+            dist += 1
 
-            if j > 0 and colors[i][j - 1] is None:
-                if grid[i][j - 1] == 1:
-                    return color
-
-                toVisitNext.append([i, j - 1, color + 1])
-            
-            if j < n - 1 and colors[i][j + 1] is None:
-                if grid[i][j + 1] == 1:
-                    return color
-
-                toVisitNext.append([i, j + 1, color + 1])
+            waterQueue = nextWaterQueue
 
         return 0
 
 
 sol = Solution()
 
+assert sol.shortestBridge([[0,0,0,1,1],[0,0,0,1,0],[0,0,0,1,1],[0,0,1,0,1],[0,0,1,1,0]]) == 1
 assert sol.shortestBridge([[0, 1], [1, 0]]) == 1
 assert sol.shortestBridge([[0, 1, 0], [0, 0, 0], [0, 0, 1]]) == 2
 assert sol.shortestBridge([[1, 1, 1, 1, 1], [1, 0, 0, 0, 1], [1, 0, 1, 0, 1], [1, 0, 0, 0, 1], [1, 1, 1, 1, 1]]) == 1
