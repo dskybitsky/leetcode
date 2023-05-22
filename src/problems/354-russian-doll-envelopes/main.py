@@ -3,26 +3,27 @@ import bisect
 
 
 class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        lis = []
+
+        for num in nums:
+            if len(lis) == 0 or lis[-1] < num:
+                lis.append(num)
+            else:
+                idx = bisect.bisect_left(lis, num)
+
+                lis[idx] = num                
+
+        return len(lis)
+
     def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
         n = len(envelopes)
 
-        envs = sorted(envelopes, key = lambda x: (x[0], x[1]))
+        envs = sorted(envelopes, key = lambda x: (x[0], -x[1]))
 
-        dp = [0] * n
-        dp[0] = 1
+        heights = list(map(lambda x: x[1], envs))
 
-        ans = 1
-
-        for i in range(n):
-            for j in range(i):
-                if envs[i][0] > envs[j][0] and envs[i][1] > envs[j][1]:
-                    dp[i] = max(dp[i], dp[j] + 1)
-                else:
-                    dp[i] = max(dp[i], 1)
-            
-                ans = max(ans, dp[i])
-        
-        return ans
+        return self.lengthOfLIS(heights)
 
 
 sol = Solution()
