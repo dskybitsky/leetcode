@@ -7,16 +7,16 @@ class Solution:
         n = len(prices)
 
         @functools.lru_cache(maxsize=None)
-        def solve(offset: int = 0, min_price: int = -1) -> int:
+        def solve(offset: int = 0, buy_price: int = -1) -> int:
             if offset >= n:
                 return 0
 
-            if min_price < 0 or prices[offset] < min_price:
+            if buy_price < 0 or prices[offset] < buy_price:
                 return solve(offset + 1, prices[offset])
 
             res = max(
-                prices[offset] - min_price - fee + solve(offset + 1),
-                solve(offset + 1, min_price)
+                prices[offset] - buy_price - fee + solve(offset + 1),
+                solve(offset + 1, buy_price)
             )
 
             return res
