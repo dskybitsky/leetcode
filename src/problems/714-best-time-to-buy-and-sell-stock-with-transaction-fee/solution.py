@@ -6,22 +6,16 @@ class Solution:
     def maxProfit(self, prices: List[int], fee: int) -> int:
         n = len(prices)
 
-        @functools.lru_cache(maxsize=None)
-        def solve(offset: int = 0, buy_price: int = -1) -> int:
-            if offset >= n:
-                return 0
+        hold = [0] * n
+        free = [0] * n
 
-            if buy_price < 0 or prices[offset] < buy_price:
-                return solve(offset + 1, prices[offset])
+        hold[0] = -prices[0]
 
-            res = max(
-                prices[offset] - buy_price - fee + solve(offset + 1),
-                solve(offset + 1, buy_price)
-            )
+        for i in range(1, n):
+            hold[i] = max(hold[i - 1], free[i - 1] - prices[i])
+            free[i] = max(free[i - 1], hold[i - 1] + prices[i] - fee)
 
-            return res
-
-        return solve()
+        return free[-1]
 
 
 if __name__ == '__main__':
