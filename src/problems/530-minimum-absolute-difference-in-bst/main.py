@@ -10,27 +10,61 @@ class TreeNode:
 
 class Solution:
     def getMinimumDifference(self, root: Optional[TreeNode]) -> int:
-        res = 100001
+        vals = []
 
-        if root is not None:
-            if root.left is not None:
-                res = min(
-                    res, 
-                    abs(root.val - root.left.val), 
-                    self.getMinimumDifference(root.left)
-                )
+        def dfs(root: TreeNode):
+            if root.left:
+                dfs(root.left)
+            
+            vals.append(root.val)
+
+            if root.right:
+                dfs(root.right)
+
+        dfs(root)
+
+        n = len(vals)
+
+        res = vals[1] - vals[0]
+
+        for i in range(1, n - 1):
+            res = min(res, vals[i + 1] - vals[i])
         
-            if root.right is not None:
-                res = min(
-                    res, 
-                    abs(root.val - root.right.val), 
-                    self.getMinimumDifference(root.right)
-                )
-
         return res
 
 
 sol = Solution()
+
+assert sol.getMinimumDifference(
+    TreeNode(
+        0,
+        None,
+        TreeNode(
+            2236,
+            TreeNode(
+                1277,
+                TreeNode(519)
+            ),
+            TreeNode(2776)
+        )
+    )   
+) == 519
+
+assert sol.getMinimumDifference(
+    TreeNode(
+        236,
+        TreeNode(
+            104,
+            None,
+            TreeNode(227)
+        ),
+        TreeNode(
+            701,
+            None,
+            TreeNode(911)
+        )
+    )   
+) == 9
 
 assert sol.getMinimumDifference(
     TreeNode(
