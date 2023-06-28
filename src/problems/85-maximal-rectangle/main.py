@@ -1,10 +1,12 @@
 from typing import List
+from functools import cache
 
 class Solution:
     def maximalRectangle(self, matrix: List[List[str]]) -> int:
         n = len(matrix)
         m = len(matrix[0])
 
+        @cache
         def solve(i1: int = 0, i2: int = n - 1, j1: int = 0, j2: int = m - 1) -> int:
             if i2 < i1 or j2 < j1:
                 return 0
