@@ -7,25 +7,6 @@ class Solution:
         n = len(matrix)
         m = len(matrix[0])
         
-        z_cols_dict = { }
-        z_rows_dict = { }
-
-        for i in range(n):
-            for j in range(m):
-                if matrix[i][j] == '0':
-                    if i in z_rows_dict:
-                        z_rows_dict[i].add((i, j))
-                    else:
-                        z_rows_dict[i] = set([(i, j)])
-
-                    if j in z_cols_dict:
-                        z_cols_dict[j].add((i, j))
-                    else:
-                        z_cols_dict[j] = set([(i, j)])
-        
-        z_cols = sorted(z_cols_dict.keys())
-        z_rows = sorted(z_rows_dict.keys())
-
         @cache
         def solve(i1: int = 0, i2: int = n - 1, j1: int = 0, j2: int = m - 1) -> int:
             if i2 < i1 or j2 < j1:
@@ -42,28 +23,65 @@ class Solution:
                 solve(i1, i2, j1, zero[1] - 1),
                 solve(i1, i2, zero[1] + 1, j2)
             )
+        
+        dp = [[[None] * m for _ in range(n)] for _ in range(4)]
+        
+        last_zero = None
 
-        @cache
+        for i in range(n):
+            for j in range(m):
+                if matrix[i][j] == '0':
+                    last_zero = (i, j)
+                
+                dp[0][i][j] = last_zero
+        
+        last_zero = None
+
+        for i in range(n):
+            for j in range(m - 1, -1, -1):
+                if matrix[i][j] == '0':
+                    last_zero = (i, j)
+                
+                dp[1][i][j] = last_zero
+
+        last_zero = None
+
+        for i in range(n - 1, -1, -1):
+            for j in range(m):
+                if matrix[i][j] == '0':
+                    last_zero = (i, j)
+                
+                dp[2][i][j] = last_zero
+
+        last_zero = None
+
+        for i in range(n - 1, -1, -1):
+            for j in range(m - 1, -1, -1):
+                if matrix[i][j] == '0':
+                    last_zero = (i, j)
+                
+                dp[3][i][j] = last_zero
+
+
         def find_zero(i1: int, i2: int, j1: int, j2: int) -> Optional[List[int]]:
-            r_start = bisect.bisect_left(z_rows, i1)
-            r_end = bisect.bisect_right(z_rows, i2)
+            dp_zeros = [
+                dp[0][i2][j2],
+                dp[1][i2][j1],
+                dp[2][i1][j2],
+                dp[3][i1][j1]
+            ]
 
-            z_rows_set = set()
-
-            for r in range(r_start, r_end):
-                z_rows_set.update(z_rows_dict[z_rows[r]])
-
-            c_start = bisect.bisect_left(z_cols, j1)
-            c_end = bisect.bisect_right(z_cols, j2)
-
-            z_cols_set = set()
-
-            for c in range(c_start, c_end):
-                z_cols_set.update(z_cols_dict[z_cols[c]])
-
-            z_set = z_rows_set & z_cols_set
-
-            return z_set.pop() if len(z_set) else None
+            for dp_zero in dp_zeros:
+                if (
+                    dp_zero is not None 
+                    and dp_zero[0] >= i1 
+                    and dp_zero[0] <= i2 
+                    and dp_zero[1] >= j1
+                    and dp_zero[1] <= j2
+                ):
+                    return dp_zero
+            
+            return None
 
         return solve()
 
@@ -72,5 +90,5 @@ sol = Solution()
 
 assert sol.maximalRectangle([["0"]]) == 0
 assert sol.maximalRectangle([["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]) == 6
-
+assert sol.maximalRectangle([["1","0","1","1","1"],["0","1","0","1","0"],["1","1","0","1","1"],["1","1","0","1","1"],["0","1","1","1","1"]]) == 6
 print("Ok")
