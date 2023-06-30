@@ -30,35 +30,25 @@ class Solution:
             for j in range(m):
                 if matrix[i][j] == '0':
                     dp[0][i][j] = (i, j)
-                else:
-                    dp[0][i][j] = (dp[0][i - 1][j] if i > 0 else None) or (dp[0][i][j - 1] if j > 0 else None)
-
-        for i in range(n):
-            for j in range(m - 1, -1, -1):
-                if matrix[i][j] == '0':
                     dp[1][i][j] = (i, j)
                 else:
-                    dp[1][i][j] = (dp[1][i - 1][j] if i > 0 else None) or (dp[1][i][j + 1] if j < m - 1 else None)
-        
-        for i in range(n - 1, -1, -1):
-            for j in range(m):
-                if matrix[i][j] == '0':
-                    dp[2][i][j] = (i, j)
-                else:
-                    dp[2][i][j] = (dp[2][i + 1][j] if i < n - 1 else None) or (dp[2][i][j - 1] if j > 0 else None)
+                    dp[0][i][j] = (dp[0][i - 1][j] if i > 0 else None) or (dp[0][i][j - 1] if j > 0 else None)
+                    dp[1][i][j] = (dp[1][i][j - 1] if j > 0 else None) or (dp[1][i - 1][j] if i > 0 else None)
 
         for i in range(n - 1, -1, -1):
             for j in range(m - 1, -1, -1):
                 if matrix[i][j] == '0':
+                    dp[2][i][j] = (i, j)
                     dp[3][i][j] = (i, j)
                 else:
+                    dp[2][i][j] = (dp[2][i][j + 1] if j < m - 1 else None) or (dp[2][i + 1][j] if i < n - 1 else None)
                     dp[3][i][j] = (dp[3][i + 1][j] if i < n - 1 else None) or (dp[3][i][j + 1] if j < m - 1 else None)
 
         def find_zero(i1: int, i2: int, j1: int, j2: int) -> Optional[List[int]]:
             dp_zeros = [
                 dp[0][i2][j2],
-                dp[1][i2][j1],
-                dp[2][i1][j2],
+                dp[1][i2][j2],
+                dp[2][i1][j1],
                 dp[3][i1][j1]
             ]
 
@@ -81,5 +71,6 @@ sol = Solution()
 
 assert sol.maximalRectangle([["0"]]) == 0
 assert sol.maximalRectangle([["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]) == 6
-#assert sol.maximalRectangle([["1","0","1","1","1"],["0","1","0","1","0"],["1","1","0","1","1"],["1","1","0","1","1"],["0","1","1","1","1"]]) == 6
+assert sol.maximalRectangle([["1","0","1","1","1"],["0","1","0","1","0"],["1","1","0","1","1"],["1","1","0","1","1"],["0","1","1","1","1"]]) == 6
+assert sol.maximalRectangle([["1","0","1","1","0","1"],["1","1","1","1","1","1"],["0","1","1","0","1","1"],["1","1","1","0","1","0"],["0","1","1","1","1","1"],["1","1","0","1","1","1"]]) == 8
 print("Ok")
