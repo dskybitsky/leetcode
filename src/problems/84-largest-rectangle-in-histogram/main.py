@@ -1,5 +1,4 @@
 from typing import List
-from functools import cache
 
 class Solution:
     def lesserElements(self, nums: List[int], dir: int) -> List[int]:
@@ -31,7 +30,7 @@ class Solution:
 
         prevs = self.lesserElements(heights, -1)
         nexts = self.lesserElements(heights, 1)
-
+        
         for i in range(n):
             prev = prevs[i] if prevs[i] is not None else i - 1
             next = nexts[i] if nexts[i] is not None else i + 1
