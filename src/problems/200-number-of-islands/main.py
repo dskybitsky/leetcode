@@ -5,7 +5,7 @@ class Solution:
         n = len(grid)
         m = len(grid[0])
         
-        visited = set()
+        not_visited = set([(i, j) for j in range(m) for i in range(n)])
 
         res = 0
 
@@ -13,30 +13,39 @@ class Solution:
             to_visit = [(i, j)]
 
             while len(to_visit):
-                cell = to_visit.pop(0)
+                i1, j1 = to_visit.pop(0)
 
-                i1, j1 = cell[0], cell[1]
+                if i1 > 0 and (i1 - 1, j1) in not_visited:
+                    if grid[i1 - 1][j1] == '1':
+                        to_visit.append((i1 - 1, j1))
+                    
+                    not_visited.remove((i1 - 1, j1))
 
-                if i1 > 0 and grid[i1 - 1][j1] == '1' and (i1 - 1, j1) not in visited:
-                    to_visit.append((i1 - 1, j1))
+                if i1 < n - 1 and (i1 + 1, j1) in not_visited:
+                    if grid[i1 + 1][j1] == '1':
+                        to_visit.append((i1 + 1, j1))
+                    
+                    not_visited.remove((i1 + 1, j1))
 
-                if i1 < n - 1 and grid[i1 + 1][j1] == '1' and (i1 + 1, j1) not in visited:
-                    to_visit.append((i1 + 1, j1))
+                if j1 > 0 and (i1, j1 - 1) in not_visited:
+                    if grid[i1][j1 - 1] == '1':
+                        to_visit.append((i1, j1 - 1))
+                    
+                    not_visited.remove((i1, j1 - 1))
 
-                if j1 > 0 and grid[i1][j1 - 1] == '1' and (i1, j1 - 1) not in visited:
-                    to_visit.append((i1, j1 - 1))
+                if j1 < m - 1 and (i1, j1 + 1) in not_visited:
+                    if grid[i1][j1 + 1] == '1':
+                        to_visit.append((i1, j1 + 1))
+                    
+                    not_visited.remove((i1, j1 + 1))
 
-                if j1 < m - 1 and grid[i1][j1 + 1] == '1' and (i1, j1 + 1) not in visited:
-                    to_visit.append((i1, j1 + 1))
-                
-                visited.add((i1, j1))
+        while len(not_visited):
+            i, j = not_visited.pop()
 
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == '1' and (i, j) not in visited:
-                    bfs(i, j)
-                    res += 1
-        
+            if grid[i][j] == '1':
+                bfs(i, j)
+                res += 1
+
         return res
     
 
