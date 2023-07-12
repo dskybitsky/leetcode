@@ -12,31 +12,20 @@ class Solution:
         if root is None:
             return []
         
-        h = [(0, root)]
+        res = []
+        stack = []
+        curr = root
 
-        to_visit = [(0, 100, root)]
+        while curr or len(stack):
+            while curr:
+                stack.insert(0, curr)
+                curr = curr.left
 
-        while len(to_visit):
-            w, d, node = to_visit.pop(0)
+            curr = stack.pop(0)
 
-            d1 = d / 2
+            res.append(curr.val)
 
-            if node.left:
-                h.append((w - d1, node.left))
-                to_visit.append((w - d1, d1, node.left))
-            
-            if node.right:
-                h.append((w + d1, node.right))
-                to_visit.append((w + d1, d1, node.right))
-
-        h.sort(key = lambda x: x[0])
-
-        n = len(h)
-
-        res = [0] * n
-        
-        for i in range(n):
-            res[i] = h[i][1].val
+            curr = curr.right
 
         return res
 
