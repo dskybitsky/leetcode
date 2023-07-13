@@ -13,16 +13,25 @@ class Solution:
             if root is None:
                 return d
             
-            return max(depth(root.left, d + 1), depth(root.right, d + 1))
+            dl = depth(root.left, d + 1)
+            dr = depth(root.right, d + 1)
+
+            setattr(root, 'depths', (dl, dr))
+            
+            return max(dl, dr)
         
         def solve(root: Optional[TreeNode]) -> bool:
             if root is None:
                 return True
             
-            if abs(depth(root.left) - depth(root.right)) > 1:
+            depths = getattr(root, 'depths')
+            
+            if abs(depths[0] - depths[1]) > 1:
                 return False
             
             return solve(root.left) and solve(root.right)
+        
+        depth(root)
         
         return solve(root)
     
