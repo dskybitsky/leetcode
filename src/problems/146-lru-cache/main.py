@@ -22,15 +22,18 @@ class LRUCache:
         if key not in self.map:
             return -1
         
-        self._bump(key)
+        node = self.map[key]
         
-        return self.map[key].val
+        self._bump(node)
+        
+        return node.val
         
 
     def put(self, key: int, value: int) -> None:
         if key in self.map:
-            self.map[key].val = value
-            self._bump(key)
+            node = self.map[key]
+            node.val = value
+            self._bump(node)
             return
         
         added = CacheListNode(key, value)
@@ -44,30 +47,23 @@ class LRUCache:
 
             del self.map[evicted.key]
     
-    def _bump(self, key: int) -> None:
-        node = self.map[key]
-
+    def _bump(self, node: CacheListNode) -> None:
         # Head
         if node.prev is None:
             return
         
         # Tail
         if node.next is None:
-            self.tail = node.prev
-            node.prev.next = None
-            node.prev = None
-            node.next = self.head
-            self.head = node
+            self._pop()
+            self._push(node)
 
-            if self.tail.prev is None:
-                self.tail.prev = self.head
             return
 
         # Middle
         node.prev.next = node.next
-        node.prev = None
-        node.next = self.head
-        self.head = node
+        node.next.prev = node.prev
+        
+        self._push(node)
 
     def _push(self, node: CacheListNode) -> None:
         if self.head is None:
@@ -76,6 +72,7 @@ class LRUCache:
             return
         
         self.head.prev = node
+        node.prev = None
         node.next = self.head
         self.head = node
 
@@ -89,6 +86,41 @@ class LRUCache:
             self.tail.prev = self.head
 
         return node
+
+lRUCache = LRUCache(2)
+
+lRUCache.put(2,1)
+lRUCache.put(2,2)
+
+assert lRUCache.get(2) == 2
+
+lRUCache.put(1,1)
+lRUCache.put(4,1)
+
+assert lRUCache.get(2) == -1
+
+
+lRUCache = LRUCache(3)
+
+lRUCache.put(1,1)
+lRUCache.put(2,2)
+lRUCache.put(3,3)
+lRUCache.put(4,4)
+
+assert lRUCache.get(4) == 4
+assert lRUCache.get(3) == 3
+assert lRUCache.get(2) == 2
+assert lRUCache.get(1) == -1
+
+lRUCache.put(5,5)
+
+assert lRUCache.get(1) == -1
+assert lRUCache.get(2) == 2
+assert lRUCache.get(3) == 3
+assert lRUCache.get(4) == -1
+assert lRUCache.get(5) == 5
+
+
 
 lRUCache = LRUCache(2)
 
